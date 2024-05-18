@@ -62,7 +62,7 @@ export function CircularProgressBar({progress, title, overrideColor}: CircularPr
 
     const textColor = getTextColor(overrideColor || color);
 
-    const titleColor = overrideColor && theme.theme === "dark" ? textColor : overrideColor ?? color;
+    const titleColor = overrideColor ?? color
     return (
         <div className="flex flex-col items-center">
             <div className={cn("text-sm font-semibold uppercase tracking-wider", overrideColor ? "dark:text-zinc-50" : "")} style={{ color: titleColor }}>
