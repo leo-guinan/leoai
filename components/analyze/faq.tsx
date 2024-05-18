@@ -40,7 +40,7 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
                 id: nanoid()
             }}/>
             {questions.map((q, index) => (
-                <>
+                <div key={`question-${index}`}>
                     <CollapsibleSection title={q.question} headerColor="howTo-background"
                                         iconColor="#8BDDE4">
                         <>
@@ -49,7 +49,7 @@ export default function FAQ({user}: { user: { name?: string | null, image?: stri
 
                     </CollapsibleSection>
 
-                </>
+                </div>
             ))}
         </div>
     )
