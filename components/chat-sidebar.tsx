@@ -1,29 +1,30 @@
 'use client'
 import * as React from 'react'
 import {SidebarList} from '@/components/sidebar-list'
-import {PitchDeckRequest} from "@prisma/client/edge";
+import {ChatTopic} from "@prisma/client/edge";
 import {IconPlus, MagnifyingGlassIcon} from "@/components/ui/icons";
 import {buttonVariants} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {clearCurrentDeck} from "@/app/actions/analyze";
 import {SyntheticEvent} from "react";
+import {clearPreviousTopic} from "@/app/actions/chat";
 
 interface ChatHistoryProps {
     userId?: string
-    decks: PitchDeckRequest[]
+    topics: ChatTopic[]
 }
 
 
 
-export function AnalysisSidebar({userId, decks }: ChatHistoryProps) {
+export function ChatSidebar({userId, topics }: ChatHistoryProps) {
 
     const router = useRouter();
 
     const clearExisting = async (e: SyntheticEvent) => {
-        e.preventDefault()
-        await clearCurrentDeck();
+        e.preventDefault();
+        await clearPreviousTopic()
+        router.push('/')
     }
 
     return (
@@ -38,7 +39,7 @@ export function AnalysisSidebar({userId, decks }: ChatHistoryProps) {
                 )}
               >
                 <MagnifyingGlassIcon className="-translate-x-2 stroke-2 size-8" />
-                Analyze New Deck
+                New Chat Topic
               </Link>
             </div>
             <React.Suspense
@@ -53,7 +54,7 @@ export function AnalysisSidebar({userId, decks }: ChatHistoryProps) {
                     </div>
                 }
             >
-                <SidebarList userId={userId} decks={decks} />
+                <SidebarList userId={userId} topics={topics} />
             </React.Suspense>
         </div>
     )

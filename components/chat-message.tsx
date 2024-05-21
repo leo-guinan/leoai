@@ -13,7 +13,7 @@ import {ChatMessageActions} from '@/components/chat-message-actions'
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Image from 'next/image'
-import ChatUser from "@/components/analyze/chat-user";
+import ChatUser from "@/components/chat/chat-user";
 
 export interface ChatMessageProps {
     message: {

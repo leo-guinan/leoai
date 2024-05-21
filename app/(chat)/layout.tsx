@@ -5,7 +5,7 @@ interface ContextLayoutProps {
 }
 export const fetchCache = 'force-no-store'
 
-export default async function AnalysisLayout({ children }: ContextLayoutProps) {
+export default async function ChatLayout({ children }: ContextLayoutProps) {
   return (
     <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
       <SidebarDesktop />

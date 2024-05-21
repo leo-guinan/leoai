@@ -23,22 +23,21 @@ model User {
   stripeCustomerId String?
   image            String?
   role             String    @default("user")
-  currentDeckId    Int?
+  currentTopicUUID String?
 
-  pitchDeckRequests PitchDeckRequest[]
-  sessions          Session[]
-  accounts          Account[]
+  sessions Session[]
+  accounts Account[]
+  topics   ChatTopic[]
 }
 
-model PitchDeckRequest {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  uuid      String    @unique
-  backendId Int
-  ownerId   String
-  owner     User      @relation(fields: [ownerId], references: [id])
-  name      String?
+model ChatTopic {
+  id        Int      @id @default(autoincrement())
+  name      String
+  uuid      String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {

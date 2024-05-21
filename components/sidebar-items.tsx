@@ -2,29 +2,29 @@
 
 import {AnimatePresence, motion} from 'framer-motion'
 import {SidebarItem} from '@/components/sidebar-item'
-import {PitchDeckRequest} from "@prisma/client/edge";
+import {ChatTopic} from "@prisma/client/edge";
 
 
 interface SidebarItemsProps {
-    decks?: PitchDeckRequest[]
+    topics?: ChatTopic[]
 }
 
-export function SidebarItems({decks}: SidebarItemsProps) {
-    if (!decks?.length) return null
+export function SidebarItems({topics}: SidebarItemsProps) {
+    if (!topics?.length) return null
 
     return (
         <AnimatePresence>
-            {decks.map(
-                (deck, index) =>
-                    deck && (
+            {topics.map(
+                (topic, index) =>
+                    topic && (
                         <motion.div
-                            key={deck?.id}
+                            key={topic?.id}
                             exit={{
                                 opacity: 0,
                                 height: 0
                             }}
                         >
-                            <SidebarItem index={index} deck={deck}>
+                            <SidebarItem index={index} topic={topic}>
                                 <></>
                             </SidebarItem>
                         </motion.div>
