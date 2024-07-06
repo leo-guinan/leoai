@@ -8,7 +8,6 @@ import {cn} from "@/lib/utils";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {SyntheticEvent} from "react";
-import {clearPreviousTopic} from "@/app/actions/chat";
 
 interface ChatHistoryProps {
     userId?: string
@@ -23,7 +22,6 @@ export function ChatSidebar({userId, topics }: ChatHistoryProps) {
 
     const clearExisting = async (e: SyntheticEvent) => {
         e.preventDefault();
-        await clearPreviousTopic()
         router.push('/')
     }
 
