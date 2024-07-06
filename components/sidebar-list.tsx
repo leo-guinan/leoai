@@ -19,7 +19,7 @@ export function SidebarList({userId: _, topics}: SidebarListProps) {
             <div className="flex-1 overflow-auto">
                 {topics?.length && (
                     <div className="space-y-2 px-2">
-                        <SidebarItems decks={topics}/>
+                        <SidebarItems topics={topics}/>
                     </div>
                 )}
             </div>

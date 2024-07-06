@@ -21,14 +21,10 @@ export interface ChatMessageProps {
         role: string
         id: string
     },
-    user: {
-        name?: string | null
-        image?: string | null
 
-    }
 }
 
-export function ChatMessage({message, user, ...props}: ChatMessageProps) {
+export function ChatMessage({message, ...props}: ChatMessageProps) {
     return (
         <div
             className={cn('group relative mb-4 flex items-start max-w-xl')}
@@ -42,7 +38,7 @@ export function ChatMessage({message, user, ...props}: ChatMessageProps) {
                         : 'bg-primary text-primary-foreground'
                 )}
             >
-                {message.role === 'user' ? <ChatUser user={user}/> :
+                {message.role === 'user' ? <ChatUser/> :
                     <Image src="/logo.png" width={32} height={32} alt="Score My Deck Logo" className="rounded-full" />}
             </div>
             <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">

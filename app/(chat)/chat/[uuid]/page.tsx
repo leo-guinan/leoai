@@ -1,10 +1,6 @@
-import {redirect} from 'next/navigation'
-
-import {auth} from '@/auth'
-import {User} from "@prisma/client/edge";
-
 import Chat from "@/components/chat/chat";
 import {getChat} from "@/app/actions/chat";
+
 interface ChatPageProps {
     params: {
         uuid: string
@@ -12,11 +8,6 @@ interface ChatPageProps {
 }
 
 export default async function ChatPage({params}: ChatPageProps) {
-    const session = await auth()
-
-    if (!session?.user) {
-        redirect(`/sign-in?next=/`)
-    }
 
     const chat = await getChat(params.uuid)
 
@@ -25,5 +16,6 @@ export default async function ChatPage({params}: ChatPageProps) {
     }
 
 
-    return <Chat user={session.user} messages={chat.messages} uuid={params.uuid} />
+    return <Chat messages={chat.messages} messagesClaude={chat.messagesClaude} messagesGPT4o={chat.messagesGPT4o}
+                 uuid={params.uuid}/>
 }

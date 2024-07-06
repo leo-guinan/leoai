@@ -3,40 +3,58 @@ import {ChatList} from "@/components/chat-list";
 import {ChatScrollAnchor} from "@/components/chat-scroll-anchor";
 import {ChatPanel} from "@/components/chat-panel";
 import {useEffect, useRef, useState} from "react";
-// import {sendPreloChatMessage} from "@/app/actions/prelo";
-import {ICloseEvent, IMessageEvent, w3cwebsocket as W3CWebSocket} from "websocket";
 import {nanoid} from "@/lib/utils";
+import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import type {SWRSubscriptionOptions} from 'swr/subscription'
+import useSWRSubscription from 'swr/subscription'
+import {ChatMessage} from "@/components/chat-message";
 import {sendChatMessage} from "@/app/actions/chat";
 
 
-interface ChatMessage {
-    id: string
+interface Message {
     content: string
     role: string
+    id: string
+    type: string
 }
+
 
 interface ChatProps {
+    messages: Message[]
+    messagesClaude: Message[]
+    messagesGPT4o: Message[]
     uuid: string
-    messages: ChatMessage[]
-    user: {
-        name?: string | null
-        image?: string | null
-    }
 }
 
+
 export default function Chat({
-                                 uuid,
                                  messages,
-                                 user,
+                                 messagesClaude,
+                                 messagesGPT4o,
+                                 uuid,
                              }: ChatProps) {
-    const [displayedMessages, setDisplayedMessages] = useState<ChatMessage[]>(messages)
+    const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
     const [isLoading, setIsLoading] = useState(false)
     const [input, setInput] = useState('')
-    const client = useRef<W3CWebSocket | null>(null)
-
-
+    const [dragActive, setDragActive] = useState(false)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const [completedDialogOpen, setCompletedDialogOpen] = useState<boolean>(false)
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
+    const [displayedClaudeMessage, setDisplayedClaudeMessage] = useState<Message>(messagesClaude[-1])
+    const [displayedGPT4oMessage, setDisplayedGPT4oMessage] = useState<Message>(messagesGPT4o[-1])
+    const {
+        data,
+        error
+    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key: string, {next}: SWRSubscriptionOptions<number, Error>) => {
+        console.log("key", key)
+        const socket = new WebSocket(key)
+        socket.addEventListener('message', (event) => next(null, event.data))
+        // @ts-ignore
+        socket.addEventListener('error', (event) => next(event.error))
+        return () => socket.close()
+    })
 
     useEffect(() => {
         if (bottomRef.current) {
@@ -45,70 +63,62 @@ export default function Chat({
     }, [displayedMessages]); // Dependency array includes the data triggering the scroll
 
     useEffect(() => {
+        if (!data) return
+        const parsedData = JSON.parse(data.toString())
+        console.log("parsedData", parsedData)
 
-        const connectSocket = () => {
+        setCompletedDialogOpen(true)
+    }, [data])
 
-            // client.current = new W3CWebSocket(`ws://localhost:3000/api/socket/`)
-            if (uuid) {
-                if (!client.current) {
-                    client.current = new W3CWebSocket(
-                        `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/`
-                    )
-                }
+    // const pickFile = async (selectedFile: File | null) => {
+    //     // Check if the file is a PDF
+    //     if (selectedFile) {
+    //         if (selectedFile.type === 'application/pdf') {
+    //             setLoading(true);
+    //             const newUploadUrl = await getUploadUrl(selectedFile.name);
+    //             if ('error' in newUploadUrl) {
+    //                 setErrorMessage('Error getting upload URL. Please try again.');
+    //                 setFile(null);
+    //                 setLoading(false);
+    //                 return;
+    //             }
+    //             setNewUUID(newUploadUrl.uuid)
+    //             setNewBackendId(newUploadUrl.backendId)
+    //
+    //
+    //             setUploadUrl(newUploadUrl.url)
+    //             setFile(selectedFile);
+    //             setErrorMessage('');
+    //             setLoading(false);
+    //         } else {
+    //             setErrorMessage('Please upload a valid PDF file.');
+    //             setFile(null);
+    //         }
+    //     }
+    // }
 
-                // client.current = new W3CWebSocket(
-                //     `${process.env.NEXT_PUBLIC_WEBSOCKET_URL}cofounder/${sessionId}/`
-                // )
-
-                client.current.onopen = () => {
-                    console.log("WebSocket Client Connected")
-                }
-
-                client.current.onmessage = (message: IMessageEvent) => {
-                    const data = JSON.parse(message.data.toString())
-
-
-                    // make sure message id isn't already in the list
-                    if (displayedMessages.find(m => m.id === data.id)) {
-                        //replace the message
-                        setDisplayedMessages(d => d.map(m => m.id === data.id ? data : m))
-                    }
-                    if (data.message) {
-                        setDisplayedMessages(d => [...d, {
-                            content: data.message,
-                            role: 'assistant',
-                            id: data.id
-                        }])
-                    }
-                }
-
-                client.current.onclose = (event: ICloseEvent) => {
-                    setTimeout(() => {
-                        connectSocket()
-                    }, 5000) // retries after 5 seconds.
-                }
-
-                client.current.onerror = (error: Error) => {
-                    console.log(`WebSocket Error: ${JSON.stringify(error)}`)
-                }
-            }
-        }
-
-        connectSocket()
-    }, [displayedMessages, uuid])
-
-    const sendMessage = async (message: { content: string, role: "user" }) => {
+    const sendMessage = async (message: { content: string, role: "user", file?: File }) => {
         if (!message.content) return
         setIsLoading(true)
         try {
+            const newUserMessage = {
+                content: message.content,
+                role: message.role,
+                id: nanoid(),
+                file: message.file
+            }
+
+
             setDisplayedMessages([...displayedMessages,
                 {
                     content: message.content,
                     role: message.role,
-                    id: "temp"
+                    id: "temp",
+                    type: message.file ? "file" : "text"
                 },
             ])
             setChatMessageLoading(true)
+            // Create a FormData object to send both text and file
 
             const response = await sendChatMessage(uuid, message);
 
@@ -116,20 +126,40 @@ export default function Chat({
                 console.error("No response")
                 return
             }
-            setChatMessageLoading(false)
+
+            const newMessage = {
+                content: response.message,
+                role: 'assistant',
+                id: nanoid(),
+                type: "text"
+            }
+            const newClaudeMessage = {
+                content: response.claude,
+                role: 'assistant',
+                id: nanoid(),
+                type: "text"
+            }
+
+            const newGPT4oMessage = {
+                content: response.gpt,
+                role: 'assistant',
+                id: nanoid(),
+                type: "text"
+            }
+            setDisplayedClaudeMessage(newClaudeMessage)
+            setDisplayedGPT4oMessage(newGPT4oMessage)
 
             setDisplayedMessages([...displayedMessages,
                 {
                     content: message.content,
                     role: message.role,
-                    id: "temp"
+                    id: "temp",
+                    type: message.file ? "file" : "text"
                 },
-                {
-                    content: response,
-                    role: 'assistant',
-                    id: nanoid()
-                }
+                newMessage
             ])
+            setChatMessageLoading(false)
+
         } catch (e) {
             console.error(e)
         } finally {
@@ -139,31 +169,63 @@ export default function Chat({
     }
     return (
         <>
-            <div className={'pt-4 md:pt-10 size-full mx-auto overflow-hidden box-border'}>
+            <div className={'pt-4 md:pt-10 size-full mx-auto box-border'}>
+
                 <>
-                    <div className="flex flex-col-reverse sm:flex-row h-[calc(100vh-200px)]">
-                        <div className="flex flex-col size-full overflow-y-scroll pb-[200px]  ">
-                            <div className="p-y-12">
-                                <ChatList messages={displayedMessages} user={user}
-                                          chatMessageLoading={chatMessageLoading}/>
-                                <ChatScrollAnchor/>
-                                <ChatPanel
-                                    isLoading={isLoading}
-                                    input={input}
-                                    setInput={setInput}
-                                    sendMessage={sendMessage}
+                    <div className="flex flex-col-reverse sm:flex-row h-full">
+                        <ResizablePanelGroup direction="horizontal">
+                            <ResizablePanel>
+                                <div
+                                    className="flex flex-col w-full h-full">
+                                    <div className="flex flex-col p-y-12 w-4/5 mx-auto h-full">
+                                        <ScrollArea className="flex flex-col size-full pb-8">
+                                            <ChatList messages={displayedMessages}
+                                                      chatMessageLoading={chatMessageLoading}/>
+                                            <ChatScrollAnchor/>
+                                        </ScrollArea>
+                                        <div className="relative">
+                                            <ChatPanel
+                                                isLoading={isLoading}
+                                                input={input}
+                                                setInput={setInput}
+                                                sendMessage={sendMessage}
 
-                                />
-                                <div ref={bottomRef}/>
-                            </div>
-                        </div>
+                                            />
+                                        </div>
+                                        <div ref={bottomRef}/>
+                                    </div>
+                                </div>
 
+                            </ResizablePanel>
+                            <ResizableHandle/>
+                            <ResizablePanel>
+                                <div className="h-full">
+                                    <ScrollArea className="flex flex-col size-full pb-8">
+                                        <div>
+                                            {displayedClaudeMessage && (
+                                                <>
+                                                    <h2>Claude Response</h2>
+                                                    <ChatMessage message={displayedClaudeMessage}/>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {displayedGPT4oMessage && (
+                                                <>
+                                                    <h2>GPT-4o Response</h2>
+                                                    <ChatMessage message={displayedGPT4oMessage}/>
+                                                </>
+                                            )}
+                                        </div>
+                                    </ScrollArea>
+                                </div>
+                            </ResizablePanel>
+                        </ResizablePanelGroup>
                     </div>
 
                 </>
 
             </div>
-
         </>
     )
 

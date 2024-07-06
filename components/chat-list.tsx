@@ -7,14 +7,10 @@ import ChatMessageLoading from "@/components/chat/chat-message-loading";
 
 export interface ChatList {
     messages: AnalysisChatMessage[]
-    user: {
-        name?: string | null
-        image?: string | null
-    }
     chatMessageLoading: boolean
 }
 
-export function ChatList({messages, user, chatMessageLoading}: ChatList) {
+export function ChatList({messages, chatMessageLoading}: ChatList) {
     const circleColors = ['bg-loadStart', 'bg-loadNext', 'bg-loadMiddle', 'bg-loadEnd'];
 
     if (!messages.length) {
@@ -47,7 +43,7 @@ export function ChatList({messages, user, chatMessageLoading}: ChatList) {
         <div className="relative px-4">
             {messages.map((message, index) => (
                 <div key={index}>
-                    <ChatMessage message={message} user={user}/>
+                    <ChatMessage message={message} />
                     {index < messages.length - 1 && (
                         <Separator className="my-4 md:my-8"/>
                     )}

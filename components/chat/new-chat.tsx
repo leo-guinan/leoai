@@ -1,6 +1,5 @@
 'use client'
 import {useState} from "react";
-import {startChat} from "@/app/actions/chat";
 import {useRouter} from "next/navigation";
 
 export default function NewChat() {
@@ -8,16 +7,8 @@ export default function NewChat() {
     const [topic, setTopic] = useState('')
 
     const handleStartChat = async () => {
-        if (!topic) {
-            return
-        }
-        const newTopic = await startChat(topic)
-        if ('error' in newTopic) {
-            console.error(newTopic.error)
-            return
-        }
         setTopic('')
-        router.push(`/chat/${newTopic.uuid}`)
+
 
     }
 

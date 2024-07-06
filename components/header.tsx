@@ -1,32 +1,14 @@
 import * as React from 'react'
 import Link from 'next/link'
-import {auth} from '@/auth'
-import {Button} from '@/components/ui/button'
-import {IconSeparator} from '@/components/ui/icons'
-import {UserMenu} from '@/components/user-menu'
 
 async function UserOrLogin() {
-    const session = await auth()
     return (
         <>
-            {session?.user ? (
-                <>
-                </>
-            ) : (
-                <Link href="/" target="_blank" rel="nofollow">
-                    Home
-                </Link>
-            )}
-            <div className="flex items-center">
-                <IconSeparator className="size-6 text-muted-foreground/50"/>
-                {session?.user ? (
-                    <UserMenu user={session.user}/>
-                ) : (
-                    <Button variant="link" asChild className="-ml-2">
-                        <Link href="/sign-in?callbackUrl=/">Login</Link>
-                    </Button>
-                )}
-            </div>
+
+            <Link href="/" target="_blank" rel="nofollow">
+                Home
+            </Link>
+
         </>
     )
 }
