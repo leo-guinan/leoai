@@ -4,34 +4,33 @@ import {MongoClient} from "mongodb";
 import {nanoid, prisma} from "@/lib/utils";
 import {BufferMemory} from "langchain/memory";
 import {MongoDBChatMessageHistory} from "@langchain/mongodb";
-import {auth} from "@/auth";
 
 
 export async function getChat(uuid: string) {
 
-    const session = await auth()
-
-    if (!session?.user) {
-        return {
-            error: "User not found"
-        }
-    }
-
-    const chatSession = await prisma.chatSession.findUnique({
-        where: {
-            uuid,
-            userId: session.user.id
-        }
-    })
-
-    if (!chatSession) {
-        await prisma.chatSession.create({
-            data: {
-                uuid,
-                userId: session.user.id
-            }
-        })
-    }
+    // const session = await auth()
+    //
+    // if (!session?.user) {
+    //     return {
+    //         error: "User not found"
+    //     }
+    // }
+    //
+    // const chatSession = await prisma.chatSession.findUnique({
+    //     where: {
+    //         uuid,
+    //         userId: session.user.id
+    //     }
+    // })
+    //
+    // if (!chatSession) {
+    //     await prisma.chatSession.create({
+    //         data: {
+    //             uuid,
+    //             userId: session.user.id
+    //         }
+    //     })
+    // }
 
 
 
