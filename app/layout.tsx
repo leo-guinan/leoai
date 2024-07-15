@@ -12,10 +12,10 @@ import {NavigationEvents} from "@/components/navigation-events";
 export const metadata = {
     metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
     title: {
-        default: 'Score My Deck',
-        template: `%s - Score My Deck`
+        default: 'LeoAI',
+        template: `%s - LeoAI`
     },
-    description: 'Determine how investable your pitch deck is with Score My Deck',
+    description: 'Step inside the head of Leo with LeoAI',
     icons: {
         icon: '/favicon.ico',
         shortcut: '/favicon-16x16.png',
