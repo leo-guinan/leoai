@@ -8,30 +8,20 @@ import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components
 import {ScrollArea} from "@/components/ui/scroll-area";
 import type {SWRSubscriptionOptions} from 'swr/subscription'
 import useSWRSubscription from 'swr/subscription'
-import {ChatMessage} from "@/components/chat-message";
 import {sendChatMessage} from "@/app/actions/chat";
-
-
-interface Message {
-    content: string
-    role: string
-    id: string
-    type: string
-}
+import {Message} from "@/lib/types";
+import Panel from "../panel/panel";
 
 
 interface ChatProps {
     messages: Message[]
-    messagesClaude: Message[]
-    messagesGPT4o: Message[]
     uuid: string
 }
 
 
 export default function Chat({
                                  messages,
-                                 messagesClaude,
-                                 messagesGPT4o,
+
                                  uuid,
                              }: ChatProps) {
     const [displayedMessages, setDisplayedMessages] = useState<Message[]>(messages)
@@ -42,8 +32,7 @@ export default function Chat({
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const [completedDialogOpen, setCompletedDialogOpen] = useState<boolean>(false)
     const [chatMessageLoading, setChatMessageLoading] = useState(false)
-    const [displayedClaudeMessage, setDisplayedClaudeMessage] = useState<Message>(messagesClaude[-1])
-    const [displayedGPT4oMessage, setDisplayedGPT4oMessage] = useState<Message>(messagesGPT4o[-1])
+
     const {
         data,
         error
@@ -115,6 +104,7 @@ export default function Chat({
                     role: message.role,
                     id: "temp",
                     type: message.file ? "file" : "text"
+
                 },
             ])
             setChatMessageLoading(true)
@@ -131,23 +121,9 @@ export default function Chat({
                 content: response.message,
                 role: 'assistant',
                 id: nanoid(),
-                type: "text"
+                type: "text",
+                contentUrls: response.content
             }
-            const newClaudeMessage = {
-                content: response.claude,
-                role: 'assistant',
-                id: nanoid(),
-                type: "text"
-            }
-
-            const newGPT4oMessage = {
-                content: response.gpt,
-                role: 'assistant',
-                id: nanoid(),
-                type: "text"
-            }
-            setDisplayedClaudeMessage(newClaudeMessage)
-            setDisplayedGPT4oMessage(newGPT4oMessage)
 
             setDisplayedMessages([...displayedMessages,
                 {
@@ -201,22 +177,8 @@ export default function Chat({
                             <ResizablePanel>
                                 <div className="h-full">
                                     <ScrollArea className="flex flex-col size-full pb-8">
-                                        <div>
-                                            {displayedClaudeMessage && (
-                                                <>
-                                                    <h2>Claude Response</h2>
-                                                    <ChatMessage message={displayedClaudeMessage}/>
-                                                </>
-                                            )}
-                                        </div>
-                                        <div>
-                                            {displayedGPT4oMessage && (
-                                                <>
-                                                    <h2>GPT-4o Response</h2>
-                                                    <ChatMessage message={displayedGPT4oMessage}/>
-                                                </>
-                                            )}
-                                        </div>
+                                        <Panel/>
+
                                     </ScrollArea>
                                 </div>
                             </ResizablePanel>

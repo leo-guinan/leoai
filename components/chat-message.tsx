@@ -14,13 +14,12 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Image from 'next/image'
 import ChatUser from "@/components/chat/chat-user";
+import {Message} from "@/lib/types";
+import YouTubePreview from "@/components/chat/youtube-preview";
+import Link from "next/link";
 
 export interface ChatMessageProps {
-    message: {
-        content: string
-        role: string
-        id: string
-    },
+    message: Message
 
 }
 
@@ -85,6 +84,18 @@ export function ChatMessage({message, ...props}: ChatMessageProps) {
                 >
                     {message.content}
                 </MemoizedReactMarkdown>
+                {message.contentUrls && (
+                    <>
+                        <span>Here are some videos you might find useful:</span>
+                        {message.contentUrls.map((content, index) => (
+                            <>
+                                <Link href={`?view=youtube&videoId=${content.metadata.videoId}&title=${content.metadata.title}&description=${content.metadata.description}`}>
+                                    <YouTubePreview videoId={content.metadata.videoId} title={content.metadata.title} />
+                                </Link>
+                            </>
+                        ))}
+                    </>
+                )}
                 <ChatMessageActions message={message}/>
             </div>
         </div>

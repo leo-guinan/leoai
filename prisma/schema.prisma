@@ -25,19 +25,9 @@ model User {
   role             String    @default("user")
   currentTopicUUID String?
 
-  sessions Session[]
-  accounts Account[]
-  topics   ChatTopic[]
-}
-
-model ChatTopic {
-  id        Int      @id @default(autoincrement())
-  name      String
-  uuid      String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sessions     Session[]
+  accounts     Account[]
+  chatSessions ChatSession[]
 }
 
 model Session {
@@ -67,4 +57,11 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model ChatSession {
+  id     String @id @default(cuid())
+  uuid   String @unique
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
