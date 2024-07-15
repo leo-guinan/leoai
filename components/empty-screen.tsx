@@ -1,8 +1,8 @@
 'use client'
 import {useEffect, useState} from "react";
-import {AnalysisChatMessage} from "@/lib/types";
 import ProgressBar from "@/components/progress-bar";
 import {useTheme} from "next-themes";
+import {Message} from "@/lib/types";
 
 const INITIAL_MESSAGE = "Feedback may take a few minutes. . .  \n"
 const STEPS = [
@@ -21,7 +21,7 @@ interface EmptyScreenProps {
 
 export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
 
-    const [currentMessage, setCurrentMessage] = useState<AnalysisChatMessage>()
+    const [currentMessage, setCurrentMessage] = useState<Message>()
 
     const theme = useTheme()
 
@@ -38,7 +38,8 @@ export function EmptyScreen({currentStep, user}: EmptyScreenProps) {
         setCurrentMessage({
             id: "-1",
             content: message,
-            role: "ai"
+            role: "ai",
+            type: "text"
         })
     }, [currentStep]);
 
