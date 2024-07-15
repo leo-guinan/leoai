@@ -1,7 +1,6 @@
 'use client'
 import * as React from 'react'
 import {SidebarList} from '@/components/sidebar-list'
-import {ChatTopic} from "@prisma/client/edge";
 import {IconPlus, MagnifyingGlassIcon} from "@/components/ui/icons";
 import {buttonVariants} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
@@ -11,12 +10,11 @@ import {SyntheticEvent} from "react";
 
 interface ChatHistoryProps {
     userId?: string
-    topics: ChatTopic[]
 }
 
 
 
-export function ChatSidebar({userId, topics }: ChatHistoryProps) {
+export function ChatSidebar({userId }: ChatHistoryProps) {
 
     const router = useRouter();
 
@@ -52,7 +50,7 @@ export function ChatSidebar({userId, topics }: ChatHistoryProps) {
                     </div>
                 }
             >
-                <SidebarList userId={userId} topics={topics} />
+                <SidebarList userId={userId} />
             </React.Suspense>
         </div>
     )

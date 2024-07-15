@@ -68,7 +68,7 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Api-Key ${process.env.PRELO_API_KEY}`
+            Authorization: `Api-Key ${process.env.API_KEY}`
         },
         body: JSON.stringify({
             uuid,

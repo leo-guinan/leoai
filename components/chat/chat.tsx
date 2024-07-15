@@ -36,7 +36,7 @@ export default function Chat({
     const {
         data,
         error
-    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}prelo/${uuid}/` as string, (key: string, {next}: SWRSubscriptionOptions<number, Error>) => {
+    } = useSWRSubscription(`${process.env.NEXT_PUBLIC_WEBSOCKET_URL}leo/${uuid}/` as string, (key: string, {next}: SWRSubscriptionOptions<number, Error>) => {
         console.log("key", key)
         const socket = new WebSocket(key)
         socket.addEventListener('message', (event) => next(null, event.data))
