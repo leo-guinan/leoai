@@ -17,6 +17,7 @@ import ChatUser from "@/components/chat/chat-user";
 import {Message} from "@/lib/types";
 import YouTubePreview from "@/components/chat/youtube-preview";
 import Link from "next/link";
+import PreviewLink from "@/components/chat/preview-link";
 
 export interface ChatMessageProps {
     message: Message
@@ -86,12 +87,10 @@ export function ChatMessage({message, ...props}: ChatMessageProps) {
                 </MemoizedReactMarkdown>
                 {message.contentUrls && (
                     <>
-                        <span>Here are some videos you might find useful:</span>
+                        <span>Here are some links you might find useful:</span>
                         {message.contentUrls.map((content, index) => (
                             <>
-                                <Link href={`?view=youtube&videoId=${content.metadata.videoId}&title=${content.metadata.title}&description=${content.metadata.description}`}>
-                                    <YouTubePreview videoId={content.metadata.videoId} title={content.metadata.title} />
-                                </Link>
+                                <PreviewLink metadata={content.metadata} source={content.source}/>
                             </>
                         ))}
                     </>

@@ -1,11 +1,8 @@
 
 export interface Content {
     type: string
-    metadata: {
-        videoId: string
-        title: string
-        description: string
-    }
+    metadata: Record<string,string>
+    source: string
 
 }
 

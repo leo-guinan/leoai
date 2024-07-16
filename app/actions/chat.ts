@@ -77,7 +77,6 @@ export async function sendChatMessage(uuid: string, message: { content: string, 
     })
 
     const parsed = await sendMessageResponse.json()
-    console.log(parsed)
     return {
         message: parsed.message,
         content: parsed.content,
