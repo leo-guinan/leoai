@@ -1,5 +1,4 @@
 import React from 'react';
-import {ExternalLink} from 'lucide-react';
 import Link from "next/link";
 
 interface LinkPreviewProps {
@@ -37,7 +36,8 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
 
     if (source !== 'youtube') {
         return (
-            <Link href={`?view=${source}&title=${metadata.title}&description=${metadata.description}`}>
+
+            <a href={metadata.url} target={"_blank"} rel={"noopener noreferrer"}>
                 <div className="flex items-start space-x-2 p-2 rounded-md">
                     <img
                         src={metadata.image}
@@ -50,7 +50,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
                         <div className="text-xs text-gray-500">{metadata?.description}</div>
                     </div>
                 </div>
-            </Link>
+            </a>
 
         );
     }
