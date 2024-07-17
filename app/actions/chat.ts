@@ -64,7 +64,7 @@ export async function getChat(uuid: string) {
 
 export async function sendChatMessage(uuid: string, message: { content: string, role: "user" | "assistant" }) {
 
-    const sendMessageResponse = await fetch(`${process.env.API_URL as string}chat/`, {
+    const sendMessageResponse = await fetch(`${process.env.API_URL as string}chat/ev/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
