@@ -14,7 +14,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
 
         return (<Link
-                href={`?view=${metadata.source}&videoId=${metadata.videoId}&title=${metadata.title}&description=${metadata.description}`}>
+                href={`?view=${source}&videoId=${metadata.videoId}&title=${metadata.title}&description=${metadata.description}`}>
 
                 <div className="flex items-center space-x-2 p-2 rounded-md">
 
