@@ -25,7 +25,7 @@ export default function Panel() {
                         />
                     </div>
                 )}
-                {searchParams.get('view') !== 'youtube' && (
+                {searchParams.get('view') && searchParams.get('view') !== 'youtube' && (
                     <div className="size-full">
                         <WebContentViewer
                             image={searchParams.get('image') ?? ""}
