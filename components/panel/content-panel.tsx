@@ -16,8 +16,8 @@ export default function WebContentViewer({url, title, description, image}: WebCo
     };
 
     return (
-    <div className="w-full h-full bg-white p-6 overflow-auto">
-        <div className="w-full h-full bg-white p-6 overflow-auto">
+    <div className="w-full h-full p-6 overflow-auto">
+        <div className="w-full h-full  p-6 overflow-auto">
         <div className="w-full mb-4 overflow-hidden rounded-lg shadow-lg" style={{ maxHeight: '300px' }}>
 
                     <img src={image} alt={title}
