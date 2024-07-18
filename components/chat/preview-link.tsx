@@ -14,7 +14,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
 
         return (<Link
-                href={`?view=${source}&videoId=${metadata.videoId}&title=${metadata.title}&description=${metadata.description}`}>
+                href={`?view=${source}&videoId=${metadata.videoId}&title=${encodeURIComponent(metadata.title)}&description=${encodeURIComponent(metadata.description)}`}>
 
                 <div className="flex items-center space-x-2 p-2 rounded-md">
 
@@ -37,7 +37,8 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
     if (source !== 'youtube') {
         return (
 
-            <a href={metadata.url} target={"_blank"} rel={"noopener noreferrer"}>
+            <Link
+                href={`?view=${source}&url=${encodeURIComponent(metadata.url)}&title=${encodeURIComponent(metadata.title)}&description=${encodeURIComponent(metadata.description)}&image=${encodeURIComponent(metadata.image)}`}>
                 <div className="flex items-start space-x-2 p-2 rounded-md">
                     <img
                         src={metadata.image}
@@ -50,7 +51,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
                         <div className="text-xs text-gray-500">{metadata?.description}</div>
                     </div>
                 </div>
-            </a>
+            </Link>
 
         );
     }
