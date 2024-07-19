@@ -17,7 +17,7 @@ export default function Panel() {
     return (
         <>
             <div className="size-full">
-                {searchParams.get('view') === 'youtube' && (
+                {searchParams.get('view') === 'ideasupplychain_yt' && (
                     <div className="size-full">
                         <YoutubePanel videoId={searchParams.get('videoId') ?? ""}
                                       title={searchParams.get('title') ?? ""}
@@ -25,7 +25,7 @@ export default function Panel() {
                         />
                     </div>
                 )}
-                {searchParams.get('view') && searchParams.get('view') !== 'youtube' && (
+                {searchParams.get('view') && searchParams.get('view') !== 'ideasupplychain_yt' && (
                     <div className="size-full">
                         <WebContentViewer
                             image={searchParams.get('image') ?? ""}

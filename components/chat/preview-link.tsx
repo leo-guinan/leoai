@@ -7,8 +7,8 @@ interface LinkPreviewProps {
 }
 
 const LinkPreview: React.FC<LinkPreviewProps> = ({metadata, source}) => {
-
-    if (source === 'youtube') {
+    if (!metadata || !metadata.title) return null;
+    if (source === 'ideasupplychain_yt') {
         const videoId = metadata.videoId
         if (!videoId) return null;
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
