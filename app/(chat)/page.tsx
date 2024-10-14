@@ -3,5 +3,6 @@ import {redirect} from "next/navigation";
 
 
 export default async function NewChatPage() {
-    redirect(`/chat/${nanoid()}`)
+    const uuid = nanoid();
+    redirect(`/chat/${uuid}`);
 }
